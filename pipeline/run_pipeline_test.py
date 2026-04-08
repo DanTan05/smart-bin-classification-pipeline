@@ -1,6 +1,6 @@
 import os
 import time
-from camera_input.image_source import ImageSource
+from camera_input.image_source import CameraCapture, ImageSource
 from preprocessing.image_preprocessor import ImageProcessor
 from inference.model_interface import ModelInterface
 from inference.result_handler import ResultHandler
@@ -8,26 +8,37 @@ from communication.api_client import ApiClient
 from logs.classification_logger import ClassificationLogger
 
 # ---------------- CONFIG ----------------
-PIPELINE_DIR  = os.path.dirname(os.path.abspath(__file__))
-BIN_ID        = "BIN_001"
-API_ENDPOINT  = "https://ingestbinevent-t4vkrtxd5q-uc.a.run.app"
-SEND_API_EVENTS = False   # set True only when testing with backend
+PIPELINE_DIR    = os.path.dirname(os.path.abspath(__file__))
+BIN_ID          = "BIN_001"
+API_ENDPOINT    = "https://ingestbinevent-t4vkrtxd5q-uc.a.run.app"
+SEND_API_EVENTS = True   # set True only when testing with backend
+USE_CAMERA      = True   # True = live camera, False = load from test_images folder
 # ----------------------------------------
 
 def main():
-    image_source    = ImageSource(
-        os.path.join(PIPELINE_DIR, "test_images"),
-        os.path.join(PIPELINE_DIR, "processed_images")
-    )
     image_processor = ImageProcessor()
     model           = ModelInterface()
     result_handler  = ResultHandler()
     api_client      = ApiClient(API_ENDPOINT)
     logger          = ClassificationLogger()
 
-    print("\nStarting BIN pipeline for latest image...\n")
+    print("\nStarting BIN pipeline...\n")
 
-    image, path = image_source.get_latest_image()
+    if USE_CAMERA:
+        camera = CameraCapture(
+            save_folder=os.path.join(PIPELINE_DIR, "captured_images"),
+            device_index=0,
+            warmup_seconds=1,
+        )
+        print("Source: live camera")
+        image, path = camera.capture()
+    else:
+        image_source = ImageSource(
+            os.path.join(PIPELINE_DIR, "test_images"),
+            os.path.join(PIPELINE_DIR, "processed_images"),
+        )
+        print("Source: test_images folder")
+        image, path = image_source.get_latest_image()
     print(f"Image loaded: {path}")
 
     # ── Vision + fallback ────────────────────────────────────────────────

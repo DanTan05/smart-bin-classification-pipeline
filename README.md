@@ -34,7 +34,7 @@ project/
 ├── pipeline/
 │   ├── run_pipeline_test.py        # main entry point — full pipeline on one image
 │   ├── camera_input/
-│   │   └── image_source.py         # loads latest image, moves to processed/
+│   │   └── image_source.py         # CameraCapture (live) + ImageSource (folder-based testing)
 │   ├── preprocessing/
 │   │   └── image_preprocessor.py   # resize, BGR→RGB, rescale, quality checks
 │   ├── inference/
@@ -58,7 +58,7 @@ project/
 ## Pipeline Flow
 
 ```
-Camera Image → Quality Check → MobileNetV2 Inference → Temperature Scaling
+Camera Capture → Quality Check → MobileNetV2 Inference → Temperature Scaling
     → Confidence Threshold → Bin Routing → API Events → CSV Log
 ```
 
@@ -75,7 +75,30 @@ Camera Image → Quality Check → MobileNetV2 Inference → Temperature Scaling
 
 *(Note: There is also a `waste_classifier.keras` file in the release. You only need this if you plan to retrain the model or run evaluate.py (add images to dataset/test first); the pipeline only needs the `.tflite` file).*
 
-### Pipeline (classification)
+### On Raspberry Pi (live camera)
+
+```bash
+# 1. Transfer the pipeline folder to the Pi
+scp -r pipeline/ pi@<raspberry-pi-ip>:/home/pi/pipeline
+
+# 2. SSH into the Pi
+ssh pi@<raspberry-pi-ip>
+
+# 3. Install dependencies
+cd /home/pi/pipeline
+python3 -m venv venv
+source venv/bin/activate
+pip install opencv-python-headless numpy requests tflite-runtime
+
+# 4. Run
+python3 run_pipeline_test.py
+```
+
+Set `USE_CAMERA = True` and `SEND_API_EVENTS = True` in `run_pipeline_test.py` before running.
+
+Captured photos are saved to `pipeline/captured_images/` for audit.
+
+### Local testing (folder-based, no camera)
 
 ```bash
 cd pipeline
@@ -85,7 +108,7 @@ pip install -r ../requirements_pipeline.txt
 python run_pipeline_test.py
 ```
 
-Place images in `pipeline/test_images/` — the pipeline picks the newest one, classifies it, and moves it to `pipeline/processed_images/`.
+Set `USE_CAMERA = False` in `run_pipeline_test.py`. Place images in `pipeline/test_images/` — the pipeline picks the newest one, classifies it, and moves it to `pipeline/processed_images/`.
 
 ### Training
 
@@ -103,7 +126,8 @@ python evaluate.py
 
 | Setting | File | Default |
 |---------|------|---------|
-| `SEND_API_EVENTS` | `run_pipeline_test.py` | `False` |
+| `USE_CAMERA` | `run_pipeline_test.py` | `True` |
+| `SEND_API_EVENTS` | `run_pipeline_test.py` | `True` |
 | `TEMPERATURE` | `model_interface.py` / `evaluate.py` | `1.2` |
 | `confidence_threshold` | `result_handler.py` | `0.60` |
 | `BIN_ID` | `run_pipeline_test.py` | `BIN_001` |
