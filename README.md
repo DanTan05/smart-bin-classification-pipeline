@@ -66,6 +66,17 @@ Camera Capture → Quality Check → MobileNetV2 Inference → Temperature Scali
 - `PIECE_COLLECTED` — sent for every classified item with the routed `subBin`
 - `BATTERY_DETECTED` — sent when a battery is detected (always `subBin: mixed`)
 
+## Pipeline Demo
+
+<p align="center">
+  <img src="pictures-readme/battery-test.jpeg" width="48%" alt="Battery detection"/>
+  <img src="pictures-readme/can-test.jpeg" width="48%" alt="Can classification"/>
+</p>
+<p align="center">
+  <img src="pictures-readme/paper-test.jpeg" width="48%" alt="Paper classification"/>
+  <img src="pictures-readme/plastic-test.jpeg" width="48%" alt="Plastic classification"/>
+</p>
+
 ## How to Run
 
 ### Download the Model
