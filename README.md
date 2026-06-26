@@ -69,12 +69,20 @@ Camera Capture → Quality Check → MobileNetV2 Inference → Temperature Scali
 ## Pipeline Demo
 
 <p align="center">
-  <img src="pictures-readme/battery-test.jpeg" width="460" height="290" alt="Battery detection"/>
-  <img src="pictures-readme/can-test.jpeg" width="460" height="290" alt="Can classification"/>
+  <img src="pictures-readme/battery-test.jpeg" width="48%" alt="Battery detection"/>
+  <img src="pictures-readme/battery-test-terminal.jpeg" width="48%" alt="Battery detection terminal"/>
 </p>
 <p align="center">
-  <img src="pictures-readme/paper-test.jpeg" width="460" height="290" alt="Paper classification"/>
-  <img src="pictures-readme/plastic-test.jpeg" width="460" height="290" alt="Plastic classification"/>
+  <img src="pictures-readme/can-test.jpeg" width="48%" alt="Can classification"/>
+  <img src="pictures-readme/can-test-terminal.jpeg" width="48%" alt="Can classification terminal"/>
+</p>
+<p align="center">
+  <img src="pictures-readme/paper-test.jpeg" width="48%" alt="Paper classification"/>
+  <img src="pictures-readme/paper-test-terminal.jpeg" width="48%" alt="Paper classification terminal"/>
+</p>
+<p align="center">
+  <img src="pictures-readme/plastic-test.jpeg" width="48%" alt="Plastic classification"/>
+  <img src="pictures-readme/plastic-test-terminal.jpeg" width="48%" alt="Plastic classification terminal"/>
 </p>
 
 ## How to Run
